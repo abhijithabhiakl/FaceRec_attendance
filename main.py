@@ -24,10 +24,10 @@ def find_encoding(images:list):
         encode_list.append(encode)
     return encode_list
 
-encodelistknown = find_encoding(images)
-print("Encoding Complete")
 
 def face_recog():
+    encodelistknown = find_encoding(images)
+    print("Encoding Complete")
     cap = cv2.VideoCapture(0)
     while True:
         success, img = cap.read()
@@ -48,10 +48,12 @@ def face_recog():
                 cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
                 cv2.rectangle(img, (x1, y2-35), (x1, y2), (0, 255, 0), cv2.FILLED)
                 cv2.putText(img, name, (x1+6, y2-6), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 255, 255), 2)
-
-
         cv2.imshow("webcam", img)
         cv2.waitKey(1)
+
+
+if __name__ == "__main__":
+    t1 = threading.Thread(target=face_recog(), args=())
 
 '''sya = face_recognition.load_image_file('image assets\Shyam Saseendran.jpeg')
 ada = face_recognition.load_image_file('image assets\Adarsh Sreenivasan.jpeg')
