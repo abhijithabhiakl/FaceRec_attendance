@@ -1,8 +1,8 @@
 import os
 import cv2
 import time
-import threading
 import sqlite3
+import threading
 import numpy as np
 import face_recognition
 
@@ -31,13 +31,16 @@ def face_recog():
     cap = cv2.VideoCapture(0)
     while True:
         success, img = cap.read()
+        named_tuple = time.localtime()  # get struct_time
+        time_string = time.strftime("%m/%d/%Y, %H:%M:%S", named_tuple)
+        cv2.putText(img, time_string, (0, 470), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.90, (255, 255, 255), 2)
         imgs = cv2.resize(img, (0, 0), None, 0.25, 0.25)
         imgs = cv2.cvtColor(imgs, cv2.COLOR_BGR2RGB)
-        face_frame = face_recognition.face_locations(imgs)
+        face_frame = face_recognition.face_locations(imgs, model="hog")
         encode_frame = face_recognition.face_encodings(imgs, face_frame)
 
         for encode_face, face_loc in zip(encode_frame, face_frame):
-            matches = face_recognition.compare_faces(encodelistknown, encode_face)
+            matches = face_recognition.compare_faces(encodelistknown, encode_face, 0.5)
             face_distance = face_recognition.face_distance(encodelistknown, encode_face)
             match_index = np.argmin(face_distance)
             if matches[match_index]:
@@ -47,9 +50,14 @@ def face_recog():
                 y1, x2, y2, x1 = y1*4, x2*4, y2*4, x1*4
                 cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
                 cv2.rectangle(img, (x1, y2-35), (x1, y2), (0, 255, 0), cv2.FILLED)
-                cv2.putText(img, name, (x1+6, y2-6), cv2.FONT_HERSHEY_TRIPLEX, 1, (255, 255, 255), 2)
+                cv2.putText(img, name, (x1+6, y2-6), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 255, 255), 2)
+
         cv2.imshow("webcam", img)
-        cv2.waitKey(1)
+        key = cv2.waitKey(1)
+        if key == 113:
+            cap.release()
+            cv2.destroyAllWindows()
+
 
 
 if __name__ == "__main__":
