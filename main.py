@@ -5,6 +5,8 @@ import sqlite3
 import threading
 import numpy as np
 import face_recognition
+from datetime import datetime
+
 
 path = 'image assets'
 images = []
@@ -15,6 +17,7 @@ for cls in dir_list:
     cur_img = cv2.imread(f"{path}/{cls}")
     images.append(cur_img)
     names.append(os.path.splitext(cls)[0])
+
 
 def find_encoding(images:list):
     encode_list = []
@@ -36,7 +39,7 @@ def face_recog():
         cv2.putText(img, time_string, (0, 470), cv2.FONT_HERSHEY_COMPLEX_SMALL, 0.90, (255, 255, 255), 2)
         imgs = cv2.resize(img, (0, 0), None, 0.25, 0.25)
         imgs = cv2.cvtColor(imgs, cv2.COLOR_BGR2RGB)
-        face_frame = face_recognition.face_locations(imgs, model="hog")
+        face_frame = face_recognition.face_locations(imgs, model="cnn")
         encode_frame = face_recognition.face_encodings(imgs, face_frame)
 
         for encode_face, face_loc in zip(encode_frame, face_frame):
@@ -51,6 +54,7 @@ def face_recog():
                 cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
                 cv2.rectangle(img, (x1, y2-35), (x1, y2), (0, 255, 0), cv2.FILLED)
                 cv2.putText(img, name, (x1+6, y2-6), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 255, 255), 2)
+                mark_attendance(name)
 
         cv2.imshow("webcam", img)
         key = cv2.waitKey(1)
@@ -59,9 +63,31 @@ def face_recog():
             cv2.destroyAllWindows()
 
 
+def db():
+    conn = sqlite3.connect('attendance.db')
+    cur = conn.cursor()
+    cur.execute('''CREATE TABLE IF NOT EXISTS attendance
+    (student_name TEXT,time )''')
+    pass
 
-if __name__ == "__main__":
-    t1 = threading.Thread(target=face_recog(), args=())
+
+def mark_attendance(name:str):
+    with open('attendance.csv', 'r+') as f:
+        data_list = f.readlines()
+        name_list = []
+        for i in data_list:
+            entry = i.split(',')
+            name_list.append(entry[0])
+        if name not in name_list:
+            now = datetime.now()
+            dt_string = now.strftime('%H:%M:%S')
+            f.writelines(f'\n{name},{dt_string}')
+
+
+if __name__ == '__main__':
+    t1 = threading.Thread(target=face_recog, args=())
+    t1.start()
+
 
 '''sya = face_recognition.load_image_file('image assets\Shyam Saseendran.jpeg')
 ada = face_recognition.load_image_file('image assets\Adarsh Sreenivasan.jpeg')
