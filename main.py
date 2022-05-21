@@ -16,7 +16,8 @@ for cls in dir_list:
     images.append(cur_img)
     names.append(os.path.splitext(cls)[0])
 
-def find_encoding(images:list):
+
+def find_encoding(images: list):
     encode_list = []
     for img in images:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -24,8 +25,10 @@ def find_encoding(images:list):
         encode_list.append(encode)
     return encode_list
 
+
 encodelistknown = find_encoding(images)
 print("Encoding Complete")
+
 
 def face_recog():
     cap = cv2.VideoCapture(0)
@@ -44,27 +47,25 @@ def face_recog():
                 name = names[match_index].upper()
                 print(name)
                 y1, x2, y2, x1 = face_loc
-                y1, x2, y2, x1 = y1*4, x2*4, y2*4, x1*4
+                y1, x2, y2, x1 = y1 * 4, x2 * 4, y2 * 4, x1 * 4
                 cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
-                cv2.rectangle(img, (x1, y2-35), (x1, y2), (0, 255, 0), cv2.FILLED)
-                cv2.putText(img, name, (x1+6, y2-6), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 255, 255), 2)
-
+                cv2.rectangle(img, (x1, y2 - 35), (x1, y2), (0, 255, 0), cv2.FILLED)
+                cv2.putText(img, name, (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (255, 255, 255), 2)
 
         cv2.imshow("webcam", img)
         cv2.waitKey(1)
 
-'''sya = face_recognition.load_image_file('image assets\Shyam Saseendran.jpeg')
-ada = face_recognition.load_image_file('image assets\Adarsh Sreenivasan.jpeg')
-ada = cv2.cvtColor(ada, cv2.COLOR_BGR2RGB)
-sya = cv2.cvtColor(sya, cv2.COLOR_BGR2RGB)
 
-syloc = face_recognition.face_locations(sya)[0]
-syenc = face_recognition.face_encodings(sya)[0]
-cv2.rectangle(sya, (syloc[3], syloc[0]), (syloc[1], syloc[2]),(0, 255, 0), 2)
-
-
-cv2.imshow("syam", sya)
-cv2.imshow("adarsh", ada)
-cv2.waitKey(0)  '''
-
-
+# sya = face_recognition.load_image_file('image assets\Shyam Saseendran.jpeg')
+# ada = face_recognition.load_image_file('image assets\Adarsh Sreenivasan.jpeg')
+# ada = cv2.cvtColor(ada, cv2.COLOR_BGR2RGB)
+# sya = cv2.cvtColor(sya, cv2.COLOR_BGR2RGB)
+#
+# syloc = face_recognition.face_locations(sya)[0]
+# syenc = face_recognition.face_encodings(sya)[0]
+# cv2.rectangle(sya, (syloc[3], syloc[0]), (syloc[1], syloc[2]),(0, 255, 0), 2)
+#
+#
+# cv2.imshow("syam", sya)
+# cv2.imshow("adarsh", ada)
+# cv2.waitKey(0)
