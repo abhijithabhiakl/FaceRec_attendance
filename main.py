@@ -6,7 +6,7 @@ import numpy as np
 import face_recognition
 
 sya = face_recognition.load_image_file('image assets\sya.jpeg')
-ada = face_recognition.load_image_file('image assets\sada.jpeg')
+ada = face_recognition.load_image_file('image assets\sada.jpg')
 sya = cv2.cvtColor(sya, cv2.COLOR_BGR2RGB)
 ada = cv2.cvtColor(ada, cv2.COLOR_BGR2RGB)
 
